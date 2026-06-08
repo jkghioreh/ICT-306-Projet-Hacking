@@ -1,9 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // === COUNTDOWN LOGIC ===
-    // Set target date for May 23, 2026, 09:00:00 (Swiss Time)
+    // Date cible de l'événement : 23 Mai 2026 à 09:00:00 (Heure de Suisse)
     const targetDate = new Date('2026-05-23T09:00:00').getTime();
+    
+    // Conteneur principal pour afficher un message si terminé
+    const countdownContainer = document.getElementById('countdown');
 
     function updateCountdown() {
+        if (!countdownContainer) return;
+        
         const now = new Date().getTime();
         const distance = targetDate - now;
 
@@ -14,11 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!elDays || !elHours || !elMins || !elSecs) return;
 
+        // Si l'événement a commencé
         if (distance < 0) {
-            elDays.innerText = "00";
-            elHours.innerText = "00";
-            elMins.innerText = "00";
-            elSecs.innerText = "00";
+            countdownContainer.innerHTML = '<div class="event-started-msg" style="font-size: 1.5rem; color: var(--accent-primary); font-weight: 800; text-shadow: 0 0 15px var(--accent-glow);">L\'ÉVÉNEMENT EST EN COURS !</div>';
             return;
         }
 
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elSecs.innerText = seconds.toString().padStart(2, '0');
     }
 
-    // Update countdown every second
+    // Mise à jour toutes les secondes
     setInterval(updateCountdown, 1000);
-    updateCountdown(); // Initial call
+    updateCountdown(); // Appel initial
 });
