@@ -59,4 +59,66 @@ document.addEventListener('DOMContentLoaded', () => {
             faqItem.classList.toggle('active');
         });
     });
+
+    // === LOGIQUE DU FORMULAIRE D'INSCRIPTION (MEMBRES DYNAMIQUES) ===
+    const membersContainer = document.getElementById('membersContainer');
+    const btnAddMember = document.getElementById('btnAddMember');
+    const btnRemoveMember = document.getElementById('btnRemoveMember');
+    const memberCountSpan = document.getElementById('memberCount');
+    
+    let currentMembers = 2;
+    const maxMembers = 4;
+    
+    if (btnAddMember && btnRemoveMember && membersContainer) {
+        btnAddMember.addEventListener('click', () => {
+            if (currentMembers < maxMembers) {
+                currentMembers++;
+                
+                // Créer le bloc du nouveau membre
+                const memberBlock = document.createElement('div');
+                memberBlock.className = 'member-block';
+                memberBlock.id = `memberBlock_${currentMembers}`;
+                memberBlock.innerHTML = `
+                    <h3>Membre ${currentMembers}</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Pseudo <span class="required">*</span></label>
+                            <input type="text" name="member_${currentMembers}_pseudo" required placeholder="Pseudo">
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" name="member_${currentMembers}_email" required placeholder="email@exemple.com">
+                        </div>
+                    </div>
+                `;
+                
+                membersContainer.appendChild(memberBlock);
+                memberCountSpan.innerText = currentMembers;
+                
+                // Mettre à jour la visibilité des boutons
+                btnRemoveMember.style.display = 'inline-block';
+                if (currentMembers === maxMembers) {
+                    btnAddMember.style.display = 'none';
+                }
+            }
+        });
+        
+        btnRemoveMember.addEventListener('click', () => {
+            if (currentMembers > 2) {
+                const lastMemberBlock = document.getElementById(`memberBlock_${currentMembers}`);
+                if (lastMemberBlock) {
+                    membersContainer.removeChild(lastMemberBlock);
+                }
+                
+                currentMembers--;
+                memberCountSpan.innerText = currentMembers;
+                
+                // Mettre à jour la visibilité des boutons
+                btnAddMember.style.display = 'inline-block';
+                if (currentMembers === 2) {
+                    btnRemoveMember.style.display = 'none';
+                }
+            }
+        });
+    }
 });
