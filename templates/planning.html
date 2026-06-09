@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Planning de l'Événement{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="section-container">
+        <h1 class="page-title">Programme & Informations Pratiques</h1>
+        <p class="page-subtitle">Découvrez le déroulement des deux journées de compétition et préparez votre venue au STCC.</p>
+    </div>
+</section>
+
+<section class="planning-section">
+    <div class="section-container">
+        <div class="timeline-container">
+            <!-- Jour 1 -->
+            <div class="timeline-day">
+                <h2 class="timeline-title">Jour 1 : 23 Mai 2026 <span class="badge-day">Ouverture & Phase de Poules</span></h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">08:00 - 09:00</div>
+                        <div class="timeline-content">
+                            <h3>Accueil & Inscription</h3>
+                            <p>Arrivée des équipes, vérification des identités, distribution des badges et du matériel (SwissTech Convention Center).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">09:00 - 09:30</div>
+                        <div class="timeline-content">
+                            <h3>Cérémonie d'Ouverture</h3>
+                            <p>Mot de bienvenue de SafeNetAcademy, présentation des règles du CTF et briefing de sécurité.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">09:30 - 12:30</div>
+                        <div class="timeline-content highlight-event">
+                            <h3>Lancement du CTF - Phase 1</h3>
+                            <p>Ouverture de l'infrastructure réseau. Les équipes commencent à résoudre les premiers challenges (Web, Crypto, Osint).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:30 - 14:00</div>
+                        <div class="timeline-content">
+                            <h3>Pause Déjeuner</h3>
+                            <p>Repas traiteur sur place, opportunité de networking avec les sponsors.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">14:00 - 20:00</div>
+                        <div class="timeline-content highlight-event">
+                            <h3>CTF - Phase 2</h3>
+                            <p>Ouverture de nouvelles catégories de challenges (Pwn, Reverse Engineering). Début des hostilités intenses.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">20:00 - 00:00</div>
+                        <div class="timeline-content">
+                            <h3>Nocturne CTF & Dîner</h3>
+                            <p>Le CTF continue. Repas du soir servi directement aux tables des équipes. Animations nocturnes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jour 2 -->
+            <div class="timeline-day">
+                <h2 class="timeline-title">Jour 2 : 24 Mai 2026 <span class="badge-day">Phase Finale & Remise des Prix</span></h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">00:00 - 12:00</div>
+                        <div class="timeline-content highlight-event">
+                            <h3>Marathon de Nuit & Sprint Matinal</h3>
+                            <p>Les équipes persévèrent. Le café est fourni à volonté. Le classement peut basculer à tout moment.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:00 - 13:00</div>
+                        <div class="timeline-content">
+                            <h3>Pause Déjeuner</h3>
+                            <p>Repas revitalisant pour les équipes. Dernier briefing avant le sprint final.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:00 - 15:00</div>
+                        <div class="timeline-content highlight-event">
+                            <h3>Le "Boss" Final</h3>
+                            <p>Un challenge exclusif à très haut pointage est dévoilé pour les équipes encore en lice.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:00</div>
+                        <div class="timeline-content end-event">
+                            <h3>Clôture des Soumissions</h3>
+                            <p>Fermeture de la plateforme CTF. Plus aucun flag n'est accepté. Fin de la compétition.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:30 - 16:30</div>
+                        <div class="timeline-content">
+                            <h3>Cérémonie de Remise des Prix</h3>
+                            <p>Annonce des résultats finaux, remise des trophées et mots de clôture.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="map-section">
+    <div class="section-container">
+        <h2 class="section-title">Accès au STCC</h2>
+        <div class="map-container">
+            <div class="map-info">
+                <h3>SwissTech Convention Center</h3>
+                <p>Quartier Nord de l'EPFL, Route Louis-Favre 2, 1024 Écublens, Suisse.</p>
+                <ul class="map-details">
+                    <li>🚆 <strong>Transports :</strong> Métro M1, arrêt "EPFL".</li>
+                    <li>🚗 <strong>Parking :</strong> Parking public "SwissTech" disponible sur place.</li>
+                </ul>
+            </div>
+            <!-- Placeholder pour une iframe Google Maps -->
+            <div class="map-embed">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2744.922436856037!2d6.564993115593166!3d46.52281247912836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478c3102a9003dbd%3A0x6e9f16b2c6b4d375!2sSwissTech%20Convention%20Center!5e0!3m2!1sfr!2s!4v1689622956281!5m2!1sfr!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="hotels-section" id="hebergement">
+    <div class="section-container">
+        <h2 class="section-title">Hébergements Partenaires</h2>
+        <p class="section-description text-center">Des tarifs préférentiels ont été négociés pour les participants et visiteurs du Hacking International 2026. Réservez à l'avance en mentionnant le code "HACKINT2026".</p>
+        
+        <div class="hotel-cards">
+            <!-- Starling Hotel -->
+            <div class="hotel-card">
+                <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="hotel-content">
+                    <h3>Starling Hotel Lausanne</h3>
+                    <p class="hotel-distance">📍 2 min à pied du STCC</p>
+                    <p class="hotel-desc">L'hôtel le plus proche de l'événement, idéal pour les équipes voulant être au cœur de l'action.</p>
+                    <a href="#" class="btn btn-secondary hotel-link">Voir l'hôtel</a>
+                </div>
+            </div>
+            <!-- ibis -->
+            <div class="hotel-card">
+                <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1542314831-c6a420325142?auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="hotel-content">
+                    <h3>ibis Lausanne Centre</h3>
+                    <p class="hotel-distance">📍 15 min en métro (M1)</p>
+                    <p class="hotel-desc">Un choix économique et confortable, situé au centre-ville avec un accès facile à l'EPFL.</p>
+                    <a href="#" class="btn btn-secondary hotel-link">Voir l'hôtel</a>
+                </div>
+            </div>
+            <!-- Voyageurs -->
+            <div class="hotel-card">
+                <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1590490359854-dfba196ce0cb?auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="hotel-content">
+                    <h3>Hôtel des Voyageurs</h3>
+                    <p class="hotel-distance">📍 Centre-ville (Quartier Flon)</p>
+                    <p class="hotel-desc">Hôtel boutique moderne dans un quartier animé, parfait pour profiter de Lausanne après l'événement.</p>
+                    <a href="#" class="btn btn-secondary hotel-link">Voir l'hôtel</a>
+                </div>
+            </div>
+            <!-- Base -->
+            <div class="hotel-card">
+                <div class="hotel-img" style="background-image: url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="hotel-content">
+                    <h3>Base Lausanne</h3>
+                    <p class="hotel-distance">📍 À côté de la gare CFF</p>
+                    <p class="hotel-desc">Appart-hôtels équipés, parfaits pour les équipes nombreuses souhaitant plus d'autonomie et d'espace.</p>
+                    <a href="#" class="btn btn-secondary hotel-link">Voir l'hôtel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

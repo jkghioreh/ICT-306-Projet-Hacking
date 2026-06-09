@@ -451,6 +451,209 @@ a:hover {
     border-top: 1px solid var(--border-color);
 }
 
+/* --- Planning & Infos Pratiques --- */
+.page-header {
+    padding: 10rem 2rem 4rem;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--accent-primary);
+    text-shadow: 0 0 15px var(--accent-glow);
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Timeline */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.timeline-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.badge-day {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-primary);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    border-left: 2px solid var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2.6rem;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.timeline-time {
+    font-family: var(--font-mono);
+    color: var(--accent-secondary);
+    font-weight: 600;
+}
+
+.timeline-content {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.timeline-content h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.timeline-content.highlight-event {
+    border-color: var(--accent-primary);
+    background: rgba(0, 255, 136, 0.05);
+}
+
+.timeline-content.end-event {
+    border-color: #ff0044;
+}
+
+/* Map Section */
+.map-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.map-info {
+    padding: 2rem;
+}
+
+.map-info h3 {
+    margin-bottom: 1rem;
+    color: var(--accent-primary);
+}
+
+.map-details {
+    list-style: none;
+    margin-top: 1.5rem;
+}
+
+.map-details li {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Hotels Section */
+.hotels-section {
+    background: var(--bg-secondary);
+}
+
+.section-description.text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    color: var(--text-secondary);
+}
+
+.hotel-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.hotel-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.hotel-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-secondary);
+    box-shadow: 0 10px 20px rgba(0,184,255,0.2);
+}
+
+.hotel-img {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hotel-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hotel-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.hotel-distance {
+    font-size: 0.9rem;
+    color: var(--accent-secondary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.hotel-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.hotel-link {
+    text-align: center;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .nav-links {
@@ -480,5 +683,15 @@ a:hover {
     
     .hero-actions {
         flex-direction: column;
+    }
+    
+    .map-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .timeline-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
