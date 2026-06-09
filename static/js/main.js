@@ -121,4 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // === LOGIQUE DE LA NAVBAR MOBILE ===
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navLinksContainer = document.querySelector('.nav-links');
+    
+    if (mobileMenuToggle && navLinksContainer) {
+        mobileMenuToggle.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active-menu');
+        });
+    }
 });

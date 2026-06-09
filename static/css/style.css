@@ -936,7 +936,21 @@ a:hover {
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .nav-links {
-        display: none; /* Desktop menu hidden */
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 14, 23, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .nav-links.active-menu {
+        display: flex;
     }
     
     .mobile-menu-toggle {
