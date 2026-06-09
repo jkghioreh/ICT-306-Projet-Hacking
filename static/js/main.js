@@ -38,5 +38,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mise à jour toutes les secondes
     setInterval(updateCountdown, 1000);
-    updateCountdown(); // Appel initial
+    
+    // Appel initial pour éviter un décalage d'une seconde au chargement
+    updateCountdown(); 
+    
+    // === LOGIQUE DE LA FAQ (ACCORDÉON) ===
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const faqItem = question.parentElement;
+            
+            // Si on veut fermer les autres accordéons lorsqu'un est ouvert (optionnel)
+            // const activeItem = document.querySelector('.faq-item.active');
+            // if (activeItem && activeItem !== faqItem) {
+            //     activeItem.classList.remove('active');
+            // }
+
+            // Basculer l'état ouvert/fermé
+            faqItem.classList.toggle('active');
+        });
+    });
 });
