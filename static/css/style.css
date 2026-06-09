@@ -987,4 +987,42 @@ a:hover {
         align-items: flex-start;
         gap: 0.5rem;
     }
+
+    /* Ajustements de padding pour mobile */
+    .section-container {
+        padding: 3rem 1.5rem;
+    }
+
+    .page-header {
+        padding: 8rem 1.5rem 3rem;
+    }
+
+    /* Formulaires sur mobile */
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .add-member-actions {
+        flex-direction: column;
+    }
+
+    .rules-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tablette (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+    }
+    
+    .countdown {
+        flex-wrap: wrap;
+    }
 }
