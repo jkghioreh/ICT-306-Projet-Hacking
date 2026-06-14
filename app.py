@@ -202,46 +202,31 @@ def submit_flag(current_team):
 @token_required
 @admin_required
 def admin_panel(current_team):
-    # Exemple de récupération des équipes en attente
-    pending_teams = Team.query.filter_by(status='en_attente').count()
-    return f"""
-    <h1>Panel Administrateur - SafeNetAcademy</h1>
-    <p>Bienvenue {current_team.coach_name}.</p>
-    <p>Vous avez {pending_teams} équipe(s) en attente de validation.</p>
-    <hr>
-    <ul>
-        <li><a href="/admin/equipes">Gérer les équipes</a></li>
-        <li><a href="/admin/challenges">Gérer les challenges</a></li>
-    </ul>
-    """
+    # Calcul des statistiques pour la vue d'ensemble
+    stats = {
+        'total_teams': Team.query.filter_by(role='equipe').count(),
+        'pending_teams': Team.query.filter_by(status='en_attente').count(),
+        'total_challenges': Challenge.query.count(),
+        'total_submissions': Submission.query.count()
+    }
+    return render_template('admin.html', section='overview', stats=stats)
 
 @app.route('/admin/equipes', methods=['GET'])
 @token_required
 @admin_required
 def admin_equipes(current_team):
-    # Consultation de toutes les équipes
-    teams = Team.query.filter_by(role='equipe').all()
-    html = "<h1>Gestion des Équipes</h1><a href='/admin'>Retour au panel</a><br><br><ul>"
-    for t in teams:
-        html += f"<li><strong>{t.name}</strong> (Coach: {t.coach_name} | {t.coach_email}) - Statut actuel : <em>{t.status}</em> "
-        if t.status == 'en_attente':
-            html += f" 👉 <a href='/admin/equipes/{t.id}/approuver' style='color:green;'>[Approuver]</a> "
-            html += f" <a href='/admin/equipes/{t.id}/rejeter' style='color:red;'>[Rejeter]</a>"
-        html += "</li>"
-    html += "</ul>"
-    return html
+    teams = Team.query.filter_by(role='equipe').order_by(Team.id.desc()).all()
+    return render_template('admin.html', section='equipes', teams=teams)
 
 @app.route('/admin/equipes/<int:team_id>/<action>')
 @token_required
 @admin_required
 def admin_equipes_action(current_team, team_id, action):
-    # Modification du statut de l'équipe
     team = Team.query.get_or_404(team_id)
     if action == 'approuver':
         team.status = 'approuve'
     elif action == 'rejeter':
         team.status = 'rejete'
-    
     db.session.commit()
     return redirect('/admin/equipes')
 
@@ -249,7 +234,6 @@ def admin_equipes_action(current_team, team_id, action):
 @token_required
 @admin_required
 def admin_challenges(current_team):
-    # Ajout d'un challenge via formulaire (POST)
     if request.method == 'POST':
         category = request.form.get('category')
         name = request.form.get('name')
@@ -269,40 +253,25 @@ def admin_challenges(current_team):
             db.session.commit()
             return redirect('/admin/challenges')
             
-    # Consultation des challenges existants (GET)
     challenges = Challenge.query.all()
-    
-    html = "<h1>Gestion des Challenges</h1><a href='/admin'>Retour au panel</a><br><br>"
-    html += "<h2>Créer un nouveau Challenge</h2>"
-    html += '''
-    <form method="POST" style="margin-bottom: 30px;">
-        Catégorie (Ex: Web, Crypto): <input type="text" name="category" required><br><br>
-        Nom de l'épreuve: <input type="text" name="name" required><br><br>
-        Description: <textarea name="description" required rows="3" cols="40"></textarea><br><br>
-        Points attribués: <input type="number" name="points" required><br><br>
-        Flag (Format: FLAG{...}): <input type="text" name="flag" required><br><br>
-        <input type="submit" value="Ajouter le Challenge" style="background:#00ff88; padding:5px 10px;">
-    </form>
-    <hr>
-    <h2>Liste des Challenges (Base de Données)</h2><ul>
-    '''
-    for c in challenges:
-        html += f"<li><strong>[{c.category}] {c.name}</strong> ({c.points} pts) "
-        html += f"👉 Flag: <code>{c.flag}</code> "
-        html += f"- <a href='/admin/challenges/{c.id}/delete' style='color:red;'>[Supprimer]</a></li>"
-    html += "</ul>"
-    
-    return html
+    return render_template('admin.html', section='challenges', challenges=challenges)
 
 @app.route('/admin/challenges/<int:challenge_id>/delete')
 @token_required
 @admin_required
 def admin_challenges_delete(current_team, challenge_id):
-    # Suppression d'un challenge existant
     challenge = Challenge.query.get_or_404(challenge_id)
     db.session.delete(challenge)
     db.session.commit()
     return redirect('/admin/challenges')
+
+@app.route('/admin/logs')
+@token_required
+@admin_required
+def admin_logs(current_team):
+    # Récupérer les 100 dernières soumissions de flags
+    logs = Submission.query.order_by(Submission.timestamp.desc()).limit(100).all()
+    return render_template('admin.html', section='logs', logs=logs)
 
 # === INITIALISATION SERVEUR ===
 

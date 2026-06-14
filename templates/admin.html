@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel Administrateur{% endblock %}
+
+{% block content %}
+<section class="page-header" style="padding-top: 6rem; padding-bottom: 2rem;">
+    <div class="section-container">
+        <h1 class="page-title">SafeNet<span class="highlight">Admin</span></h1>
+        <p class="page-subtitle">Centre de contrôle et de surveillance du tournoi CTF.</p>
+        <a href="/logout" class="btn btn-secondary btn-small" style="margin-top: 1rem; border-color: #ff0044; color: #ff0044;">Se déconnecter</a>
+    </div>
+</section>
+
+<!-- Menu d'administration -->
+<section style="background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-color); padding: 1rem 0;">
+    <div class="section-container" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/admin" class="btn {% if section == 'overview' %}btn-primary{% else %}btn-secondary{% endif %}">Vue d'ensemble</a>
+        <a href="/admin/equipes" class="btn {% if section == 'equipes' %}btn-primary{% else %}btn-secondary{% endif %}">Gestion des Équipes</a>
+        <a href="/admin/challenges" class="btn {% if section == 'challenges' %}btn-primary{% else %}btn-secondary{% endif %}">Gestion des Challenges</a>
+        <a href="/admin/logs" class="btn {% if section == 'logs' %}btn-primary{% else %}btn-secondary{% endif %}">Logs d'Activité</a>
+    </div>
+</section>
+
+<section class="admin-content" style="padding: 3rem 0; min-height: 50vh;">
+    <div class="section-container">
+        
+        {% if section == 'overview' %}
+            <h2>Statistiques du Tournoi</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div class="time-box">
+                    <span style="font-size: 2.5rem; color: var(--accent-primary);">{{ stats.total_teams }}</span>
+                    <span>Équipes Inscrites</span>
+                </div>
+                <div class="time-box">
+                    <span style="font-size: 2.5rem; color: #ffaa00;">{{ stats.pending_teams }}</span>
+                    <span>En attente de validation</span>
+                </div>
+                <div class="time-box">
+                    <span style="font-size: 2.5rem; color: var(--accent-primary);">{{ stats.total_challenges }}</span>
+                    <span>Challenges Actifs</span>
+                </div>
+                <div class="time-box">
+                    <span style="font-size: 2.5rem; color: var(--accent-secondary);">{{ stats.total_submissions }}</span>
+                    <span>Tentatives de Flags</span>
+                </div>
+            </div>
+            
+        {% elif section == 'equipes' %}
+            <h2>Gestion des Équipes</h2>
+            <div class="table-responsive" style="margin-top: 2rem;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom d'équipe</th>
+                            <th>Coach</th>
+                            <th>Score</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in teams %}
+                        <tr>
+                            <td>#{{ t.id }}</td>
+                            <td><strong>{{ t.name }}</strong></td>
+                            <td>{{ t.coach_name }}<br><small style="color: var(--text-secondary);">{{ t.coach_email }}</small></td>
+                            <td style="font-size: 1.2rem; font-weight: bold;">{{ t.score_total }}</td>
+                            <td>
+                                {% if t.status == 'approuve' %}
+                                    <span style="color: var(--accent-primary); font-weight: 600;">Approuvé</span>
+                                {% elif t.status == 'rejete' %}
+                                    <span style="color: #ff0044; font-weight: 600;">Rejeté</span>
+                                {% else %}
+                                    <span style="color: #ffaa00; font-weight: 600;">En attente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if t.status == 'en_attente' %}
+                                    <a href="/admin/equipes/{{ t.id }}/approuver" class="btn btn-secondary btn-small" style="color:var(--accent-primary); border-color:var(--accent-primary); padding: 0.3rem 0.6rem;">Approuver</a>
+                                    <a href="/admin/equipes/{{ t.id }}/rejeter" class="btn btn-secondary btn-small" style="color:#ff0044; border-color:#ff0044; padding: 0.3rem 0.6rem;">Rejeter</a>
+                                {% else %}
+                                    <span style="color: var(--text-secondary);">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% elif section == 'challenges' %}
+            <h2>Ajouter un Challenge</h2>
+            <div class="form-container" style="padding: 2rem; margin-top: 1.5rem; margin-bottom: 3rem; background: rgba(255,255,255,0.02);">
+                <form action="/admin/challenges" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Catégorie (Ex: Web, Crypto)</label>
+                        <input type="text" name="category" required style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Nom de l'épreuve</label>
+                        <input type="text" name="name" required style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1; margin-bottom: 0;">
+                        <label>Description détaillée</label>
+                        <textarea name="description" required rows="3" style="width: 100%;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Points attribués</label>
+                        <input type="number" name="points" required style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Flag Secret (ex: FLAG{...})</label>
+                        <input type="text" name="flag" required style="width: 100%;">
+                    </div>
+                    <div style="grid-column: 1 / -1; margin-top: 1rem;">
+                        <button type="submit" class="btn btn-primary btn-block">Enregistrer le challenge</button>
+                    </div>
+                </form>
+            </div>
+            
+            <h2>Liste des Challenges</h2>
+            <div class="table-responsive" style="margin-top: 1.5rem;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Nom</th>
+                            <th>Points</th>
+                            <th>Flag Secret</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in challenges %}
+                        <tr>
+                            <td><span class="member-count-badge">{{ c.category }}</span></td>
+                            <td><strong>{{ c.name }}</strong></td>
+                            <td style="font-weight: bold;">{{ c.points }}</td>
+                            <td style="font-family: var(--font-mono); color: var(--text-secondary);">{{ c.flag }}</td>
+                            <td>
+                                <a href="/admin/challenges/{{ c.id }}/delete" class="btn btn-secondary btn-small" style="color:#ff0044; border-color:#ff0044;" onclick="return confirm('Es-tu sûr de vouloir supprimer ce challenge ?');">Supprimer</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not challenges %}
+                            <tr><td colspan="5" style="text-align:center;">Aucun challenge en base de données.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% elif section == 'logs' %}
+            <h2>Logs de Soumission (Surveillance en temps réel)</h2>
+            <div class="table-responsive" style="margin-top: 2rem;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Heure</th>
+                            <th>Équipe</th>
+                            <th>Challenge</th>
+                            <th>Flag Soumis</th>
+                            <th>Résultat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td style="color: var(--text-secondary);">{{ log.timestamp.strftime('%d/%m %H:%M:%S') }}</td>
+                            <td><strong>{{ log.team.name }}</strong></td>
+                            <td>{{ log.challenge.name }}</td>
+                            <td style="font-family: var(--font-mono); word-break: break-all;">{{ log.submitted_flag }}</td>
+                            <td>
+                                {% if log.is_correct %}
+                                    <span style="color: var(--accent-primary); font-weight: bold;">✅ Succès</span>
+                                {% else %}
+                                    <span style="color: #ff0044; font-weight: bold;">❌ Échec</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not logs %}
+                            <tr><td colspan="5" style="text-align:center;">Aucune activité enregistrée.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        
+    </div>
+</section>
+{% endblock %}
