@@ -66,6 +66,27 @@ def inscriptions():
         db.session.commit()
         return "Candidature reçue ! Votre compte a été créé. Il est en attente de validation par un administrateur.", 201
 
+# === ROUTES SCOREBOARD (TEMPS RÉEL) ===
+
+@app.route('/scoreboard')
+def scoreboard():
+    return render_template('scoreboard.html')
+
+@app.route('/api/scoreboard')
+def api_scoreboard():
+    # Récupérer les équipes approuvées, triées par score descendant
+    teams = Team.query.filter_by(role='equipe', status='approuve').order_by(Team.score_total.desc()).all()
+    
+    # Formater les données en JSON pour l'Ajax
+    leaderboard = []
+    for t in teams:
+        leaderboard.append({
+            'name': t.name,
+            'score': t.score_total
+        })
+        
+    return jsonify(leaderboard)
+
 # === ROUTE AUTHENTIFICATION (LOGIN) ===
 
 @app.route('/login', methods=['GET', 'POST'])
