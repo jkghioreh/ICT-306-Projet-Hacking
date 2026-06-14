@@ -138,45 +138,26 @@ def logout():
 
 # === ROUTES PRIVÉES (DASHBOARD CTF) ===
 
+from flask import Flask, render_template, request, jsonify, redirect, make_response, flash
+
+# ... (les imports existent déjà, je vais juste écraser les routes Dashboard)
 @app.route('/ctf/dashboard')
 @token_required
 def dashboard(current_team):
     challenges = Challenge.query.all()
-    # Récupérer les ID des challenges déjà réussis par l'équipe
-    solved_submissions = Submission.query.filter_by(team_id=current_team.id, is_correct=True).all()
-    solved_challenge_ids = [sub.challenge_id for sub in solved_submissions]
+    # Récupérer l'historique complet pour l'équipe (trié par le plus récent)
+    submissions = Submission.query.filter_by(team_id=current_team.id).order_by(Submission.timestamp.desc()).all()
     
-    html = f"""
-    <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-        <h1>Dashboard CTF - Hacking International 2026</h1>
-        <h2>Équipe : {current_team.name}</h2>
-        <p>Score Actuel : <strong style="color: #00ff88; font-size: 1.2rem;">{current_team.score_total} points</strong></p>
-        <a href="/logout" style="color: red;">Se déconnecter</a>
-        <hr>
-        <h3>Liste des Challenges</h3>
-        <ul style="list-style-type: none; padding: 0;">
-    """
+    # Isoler les IDs résolus pour affichage vert/cacher formulaire
+    solved_challenge_ids = [sub.challenge_id for sub in submissions if sub.is_correct]
     
-    for c in challenges:
-        if c.id in solved_challenge_ids:
-            html += f"<li style='color: green; padding: 10px; border: 1px solid green; margin-bottom: 10px;'>✅ <strong>[{c.category}] {c.name}</strong> ({c.points} pts) - Résolu !</li>"
-        else:
-            html += f"""
-            <li style='margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;'>
-                <strong>[{c.category}] {c.name}</strong> ({c.points} pts)<br>
-                <p><em>{c.description}</em></p>
-                <form action="/ctf/submit" method="POST" style="margin-top: 10px;">
-                    <input type="hidden" name="challenge_id" value="{c.id}">
-                    <input type="text" name="flag" placeholder="Format: FLAG{{...}}" required style="padding: 5px; width: 300px;">
-                    <input type="submit" value="Valider le Flag" style="padding: 6px 15px; background: #333; color: white; border: none; cursor: pointer;">
-                </form>
-            </li>
-            """
-    html += """
-        </ul>
-    </div>
-    """
-    return html
+    return render_template(
+        'dashboard.html', 
+        current_team=current_team, 
+        challenges=challenges, 
+        solved_challenge_ids=solved_challenge_ids, 
+        submissions=submissions
+    )
 
 @app.route('/ctf/submit', methods=['POST'])
 @token_required
@@ -189,12 +170,13 @@ def submit_flag(current_team):
     # Vérifier si le challenge est déjà résolu par cette équipe
     already_solved = Submission.query.filter_by(team_id=current_team.id, challenge_id=challenge.id, is_correct=True).first()
     if already_solved:
-        return "Vous avez déjà résolu ce challenge ! <br><br><a href='/ctf/dashboard'>Retour au Dashboard</a>", 400
+        flash("Vous avez déjà résolu ce challenge !", "error")
+        return redirect('/ctf/dashboard')
         
     # Validation du flag
     is_correct = (submitted_flag.strip() == challenge.flag)
     
-    # Enregistrement de la soumission (pour les logs, qu'elle soit bonne ou mauvaise)
+    # Enregistrement de la soumission
     submission = Submission(
         team_id=current_team.id, 
         challenge_id=challenge.id, 
@@ -207,10 +189,12 @@ def submit_flag(current_team):
         # Ajout des points
         current_team.score_total += challenge.points
         db.session.commit()
-        return f"<h2 style='color:green;'>🎉 Félicitations ! Flag correct.</h2><p>Vous gagnez {challenge.points} points.</p><a href='/ctf/dashboard'>Retour au dashboard</a>"
+        flash(f"🎉 Félicitations ! Flag correct. Vous gagnez {challenge.points} points.", "success")
     else:
         db.session.commit()
-        return "<h2 style='color:red;'>❌ Flag incorrect.</h2><p>Essayez encore !</p><a href='/ctf/dashboard'>Retour au dashboard</a>"
+        flash("❌ Flag incorrect. Essayez encore !", "error")
+        
+    return redirect('/ctf/dashboard')
 
 # === ROUTES PRIVÉES (PANEL ADMIN) ===
 
