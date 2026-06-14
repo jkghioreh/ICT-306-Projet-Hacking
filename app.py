@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify, redirect, make_response
-from models import db, Team, Member
+from models import db, Team, Member, Challenge
 from auth import generate_token, token_required, admin_required
 
 app = Flask(__name__)
@@ -175,6 +175,65 @@ def admin_equipes_action(current_team, team_id, action):
     
     db.session.commit()
     return redirect('/admin/equipes')
+
+@app.route('/admin/challenges', methods=['GET', 'POST'])
+@token_required
+@admin_required
+def admin_challenges(current_team):
+    # Ajout d'un challenge via formulaire (POST)
+    if request.method == 'POST':
+        category = request.form.get('category')
+        name = request.form.get('name')
+        description = request.form.get('description')
+        points = request.form.get('points')
+        flag = request.form.get('flag')
+        
+        if all([category, name, description, points, flag]):
+            new_challenge = Challenge(
+                category=category, 
+                name=name, 
+                description=description, 
+                points=int(points), 
+                flag=flag
+            )
+            db.session.add(new_challenge)
+            db.session.commit()
+            return redirect('/admin/challenges')
+            
+    # Consultation des challenges existants (GET)
+    challenges = Challenge.query.all()
+    
+    html = "<h1>Gestion des Challenges</h1><a href='/admin'>Retour au panel</a><br><br>"
+    html += "<h2>Créer un nouveau Challenge</h2>"
+    html += '''
+    <form method="POST" style="margin-bottom: 30px;">
+        Catégorie (Ex: Web, Crypto): <input type="text" name="category" required><br><br>
+        Nom de l'épreuve: <input type="text" name="name" required><br><br>
+        Description: <textarea name="description" required rows="3" cols="40"></textarea><br><br>
+        Points attribués: <input type="number" name="points" required><br><br>
+        Flag (Format: FLAG{...}): <input type="text" name="flag" required><br><br>
+        <input type="submit" value="Ajouter le Challenge" style="background:#00ff88; padding:5px 10px;">
+    </form>
+    <hr>
+    <h2>Liste des Challenges (Base de Données)</h2><ul>
+    '''
+    for c in challenges:
+        html += f"<li><strong>[{c.category}] {c.name}</strong> ({c.points} pts) "
+        html += f"👉 Flag: <code>{c.flag}</code> "
+        html += f"- <a href='/admin/challenges/{c.id}/delete' style='color:red;'>[Supprimer]</a></li>"
+    html += "</ul>"
+    
+    return html
+
+@app.route('/admin/challenges/<int:challenge_id>/delete')
+@token_required
+@admin_required
+def admin_challenges_delete(current_team, challenge_id):
+    # Suppression d'un challenge existant
+    challenge = Challenge.query.get_or_404(challenge_id)
+    db.session.delete(challenge)
+    db.session.commit()
+    return redirect('/admin/challenges')
 
 # === INITIALISATION SERVEUR ===
 
