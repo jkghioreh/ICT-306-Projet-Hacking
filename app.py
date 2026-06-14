@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify, redirect, make_response
-from models import db, Team, Member, Challenge
+from models import db, Team, Member, Challenge, Submission
 from auth import generate_token, token_required, admin_required
 
 app = Flask(__name__)
@@ -120,12 +120,76 @@ def logout():
 @app.route('/ctf/dashboard')
 @token_required
 def dashboard(current_team):
-    return f"""
-    <h1>Dashboard CTF - Hacking International 2026</h1>
-    <h2>Équipe : {current_team.name}</h2>
-    <p>Score Actuel : {current_team.score_total} points</p>
-    <p>Bienvenue dans l'arène ! Les challenges seront bientôt disponibles ici.</p>
+    challenges = Challenge.query.all()
+    # Récupérer les ID des challenges déjà réussis par l'équipe
+    solved_submissions = Submission.query.filter_by(team_id=current_team.id, is_correct=True).all()
+    solved_challenge_ids = [sub.challenge_id for sub in solved_submissions]
+    
+    html = f"""
+    <div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h1>Dashboard CTF - Hacking International 2026</h1>
+        <h2>Équipe : {current_team.name}</h2>
+        <p>Score Actuel : <strong style="color: #00ff88; font-size: 1.2rem;">{current_team.score_total} points</strong></p>
+        <a href="/logout" style="color: red;">Se déconnecter</a>
+        <hr>
+        <h3>Liste des Challenges</h3>
+        <ul style="list-style-type: none; padding: 0;">
     """
+    
+    for c in challenges:
+        if c.id in solved_challenge_ids:
+            html += f"<li style='color: green; padding: 10px; border: 1px solid green; margin-bottom: 10px;'>✅ <strong>[{c.category}] {c.name}</strong> ({c.points} pts) - Résolu !</li>"
+        else:
+            html += f"""
+            <li style='margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;'>
+                <strong>[{c.category}] {c.name}</strong> ({c.points} pts)<br>
+                <p><em>{c.description}</em></p>
+                <form action="/ctf/submit" method="POST" style="margin-top: 10px;">
+                    <input type="hidden" name="challenge_id" value="{c.id}">
+                    <input type="text" name="flag" placeholder="Format: FLAG{{...}}" required style="padding: 5px; width: 300px;">
+                    <input type="submit" value="Valider le Flag" style="padding: 6px 15px; background: #333; color: white; border: none; cursor: pointer;">
+                </form>
+            </li>
+            """
+    html += """
+        </ul>
+    </div>
+    """
+    return html
+
+@app.route('/ctf/submit', methods=['POST'])
+@token_required
+def submit_flag(current_team):
+    challenge_id = request.form.get('challenge_id')
+    submitted_flag = request.form.get('flag')
+    
+    challenge = Challenge.query.get_or_404(challenge_id)
+    
+    # Vérifier si le challenge est déjà résolu par cette équipe
+    already_solved = Submission.query.filter_by(team_id=current_team.id, challenge_id=challenge.id, is_correct=True).first()
+    if already_solved:
+        return "Vous avez déjà résolu ce challenge ! <br><br><a href='/ctf/dashboard'>Retour au Dashboard</a>", 400
+        
+    # Validation du flag
+    is_correct = (submitted_flag.strip() == challenge.flag)
+    
+    # Enregistrement de la soumission (pour les logs, qu'elle soit bonne ou mauvaise)
+    submission = Submission(
+        team_id=current_team.id, 
+        challenge_id=challenge.id, 
+        submitted_flag=submitted_flag, 
+        is_correct=is_correct
+    )
+    db.session.add(submission)
+    
+    if is_correct:
+        # Ajout des points
+        current_team.score_total += challenge.points
+        db.session.commit()
+        return f"<h2 style='color:green;'>🎉 Félicitations ! Flag correct.</h2><p>Vous gagnez {challenge.points} points.</p><a href='/ctf/dashboard'>Retour au dashboard</a>"
+    else:
+        db.session.commit()
+        return "<h2 style='color:red;'>❌ Flag incorrect.</h2><p>Essayez encore !</p><a href='/ctf/dashboard'>Retour au dashboard</a>"
 
 # === ROUTES PRIVÉES (PANEL ADMIN) ===
 
