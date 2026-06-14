@@ -146,6 +146,36 @@ def admin_panel(current_team):
     </ul>
     """
 
+@app.route('/admin/equipes', methods=['GET'])
+@token_required
+@admin_required
+def admin_equipes(current_team):
+    # Consultation de toutes les équipes
+    teams = Team.query.filter_by(role='equipe').all()
+    html = "<h1>Gestion des Équipes</h1><a href='/admin'>Retour au panel</a><br><br><ul>"
+    for t in teams:
+        html += f"<li><strong>{t.name}</strong> (Coach: {t.coach_name} | {t.coach_email}) - Statut actuel : <em>{t.status}</em> "
+        if t.status == 'en_attente':
+            html += f" 👉 <a href='/admin/equipes/{t.id}/approuver' style='color:green;'>[Approuver]</a> "
+            html += f" <a href='/admin/equipes/{t.id}/rejeter' style='color:red;'>[Rejeter]</a>"
+        html += "</li>"
+    html += "</ul>"
+    return html
+
+@app.route('/admin/equipes/<int:team_id>/<action>')
+@token_required
+@admin_required
+def admin_equipes_action(current_team, team_id, action):
+    # Modification du statut de l'équipe
+    team = Team.query.get_or_404(team_id)
+    if action == 'approuver':
+        team.status = 'approuve'
+    elif action == 'rejeter':
+        team.status = 'rejete'
+    
+    db.session.commit()
+    return redirect('/admin/equipes')
+
 # === INITIALISATION SERVEUR ===
 
 if __name__ == '__main__':
