@@ -108,6 +108,13 @@ def login():
     resp.set_cookie('token', token, httponly=True, secure=False) # secure=False temporaire pour HTTP local
     return resp
 
+@app.route('/logout')
+def logout():
+    # Détruit la session de l'utilisateur en supprimant le cookie
+    resp = make_response(redirect('/'))
+    resp.set_cookie('token', '', expires=0, httponly=True)
+    return resp
+
 # === ROUTES PRIVÉES (DASHBOARD CTF) ===
 
 @app.route('/ctf/dashboard')
