@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Scoreboard En Direct{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="section-container">
+        <h1 class="page-title">Scoreboard <span class="live-badge" style="font-size:1.2rem; margin-left: 10px; background: rgba(255,0,68,0.2); color: #ff0044; padding: 5px 15px; border-radius: 50px; border: 1px solid #ff0044; animation: pulse 2s infinite;">🔴 LIVE</span></h1>
+        <p class="page-subtitle">Classement en temps réel des équipes du tournoi.</p>
+    </div>
+</section>
+
+<section class="scoreboard-section" style="padding-bottom: 5rem;">
+    <div class="section-container">
+        <div class="table-responsive">
+            <table class="custom-table" id="scoreboardTable">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Rang</th>
+                        <th style="width: 60%;">Nom de l'équipe</th>
+                        <th style="width: 25%;">Score Total</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreboardBody">
+                    <!-- Les données seront injectées ici par JavaScript via l'API -->
+                    <tr>
+                        <td colspan="3" style="text-align: center;">Chargement du classement...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<style>
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const scoreboardBody = document.getElementById('scoreboardBody');
+    
+    function fetchScoreboard() {
+        fetch('/api/scoreboard')
+            .then(response => response.json())
+            .then(data => {
+                scoreboardBody.innerHTML = ''; // Réinitialiser le tableau
+                
+                if (data.length === 0) {
+                    scoreboardBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Aucune équipe approuvée pour le moment.</td></tr>';
+                    return;
+                }
+                
+                data.forEach((team, index) => {
+                    let rankDisplay = (index + 1).toString();
+                    
+                    // Médailles pour le podium
+                    if (index === 0) rankDisplay = '🥇 1er';
+                    else if (index === 1) rankDisplay = '🥈 2ème';
+                    else if (index === 2) rankDisplay = '🥉 3ème';
+                    
+                    const tr = document.createElement('tr');
+                    
+                    // Mise en valeur du podium
+                    if (index < 3) {
+                        tr.style.fontWeight = 'bold';
+                        tr.style.color = 'var(--accent-primary)';
+                        tr.style.background = 'rgba(0, 255, 136, 0.05)';
+                    }
+                    
+                    tr.innerHTML = `
+                        <td style="font-size: 1.2rem;">${rankDisplay}</td>
+                        <td style="font-family: var(--font-mono); font-size: 1.1rem; letter-spacing: 1px;">${team.name}</td>
+                        <td style="font-size: 1.4rem; font-weight: 800;">${team.score}</td>
+                    `;
+                    scoreboardBody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement du scoreboard:', error);
+                scoreboardBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Erreur de connexion au serveur.</td></tr>';
+            });
+    }
+    
+    // Chargement initial
+    fetchScoreboard();
+    
+    // Polling Ajax toutes les 5 secondes
+    setInterval(fetchScoreboard, 5000);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Règlement & Charte Éthique{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="section-container">
+        <h1 class="page-title">Règlement & Charte</h1>
+        <p class="page-subtitle">Les fondements de la compétition. Le respect de ces règles garantit un événement équitable et professionnel pour tous les participants.</p>
+    </div>
+</section>
+
+<section class="rules-section">
+    <div class="section-container">
+        <div class="rules-grid">
+            
+            <!-- Charte Ethique -->
+            <div class="rules-card">
+                <div class="rules-header">
+                    <span class="rules-icon">⚖️</span>
+                    <h2>Charte Éthique de SafeNetAcademy</h2>
+                </div>
+                <div class="rules-content">
+                    <p>En participant à <strong>Hacking International 2026</strong>, chaque joueur s'engage à respecter les principes fondamentaux de notre académie :</p>
+                    <ul class="styled-list">
+                        <li><strong>Légalité :</strong> Les compétences démontrées ici ne doivent jamais être utilisées à des fins malveillantes en dehors de l'infrastructure de jeu isolée.</li>
+                        <li><strong>Respect mutuel :</strong> Aucun comportement discriminatoire, harcèlement ou manque de respect envers les autres équipes, le staff ou les spectateurs ne sera toléré.</li>
+                        <li><strong>Partage :</strong> Bien qu'il s'agisse d'une compétition, l'esprit de partage des connaissances et d'entraide post-tournoi est encouragé.</li>
+                        <li><strong>Transparence :</strong> Si vous découvrez une faille critique non prévue dans l'infrastructure du CTF, vous devez la signaler immédiatement aux administrateurs.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Règlement CTF -->
+            <div class="rules-card">
+                <div class="rules-header">
+                    <span class="rules-icon">📜</span>
+                    <h2>Règlement Officiel du Tournoi</h2>
+                </div>
+                <div class="rules-content">
+                    <ul class="styled-list">
+                        <li><strong>Format d'équipe :</strong> Les équipes doivent être composées de 2 à 4 joueurs officiels, plus 1 coach maximum. Les changements de roster sont interdits après le début du tournoi.</li>
+                        <li><strong>Attaques interdites :</strong> Tout déni de service (DDoS) ou attaque destructrice contre l'infrastructure du CTF (scoreboard, dashboard) entraînera une disqualification immédiate et définitive.</li>
+                        <li><strong>Partage de Flags :</strong> Il est strictement interdit de partager, échanger ou vendre des flags entre équipes ("Flag Sharing"). Le système analyse les heuristiques de soumission pour détecter les fraudes.</li>
+                        <li><strong>Outils :</strong> Tous les outils open-source et scripts personnels sont autorisés. Les outils commerciaux nécessitant des licences tierces non accessibles à tous sont interdits.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="faq-section" id="faq">
+    <div class="section-container">
+        <h2 class="section-title">Foire Aux Questions (FAQ)</h2>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    Puis-je participer si je suis débutant en cybersécurité ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Oui, bien sûr ! Hacking International 2026 propose des challenges de difficulté croissante. C'est une excellente occasion d'apprendre. Cependant, un minimum de connaissances réseau, web et système est recommandé pour profiter pleinement de l'expérience.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Le matériel informatique est-il fourni ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Non, chaque équipe doit apporter son propre matériel (ordinateurs portables, multiprises, câbles Ethernet). Nous fournissons uniquement la connexion réseau très haut débit (filaire et Wi-Fi) et l'accès à l'infrastructure isolée.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Y a-t-il des prix à gagner ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolument ! L'équipe gagnante remportera le Trophée Hacking International 2026, des abonnements annuels à des plateformes d'entraînement professionnelles, ainsi que des cadeaux exclusifs offerts par nos sponsors technologiques.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Comment le réseau privé du CTF est-il structuré ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Les joueurs se connectent via un VPN dédié (OpenVPN). L'accès aux cibles n'est possible que depuis ce tunnel sécurisé. L'utilisation d'internet reste ouverte pour la documentation et l'OSINT, mais le trafic est monitoré.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
